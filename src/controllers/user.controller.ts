@@ -146,3 +146,27 @@ export const whoami = async (req: AuthRequest, res: Response) => {
     });
   }
 };
+
+export const resetPassword = async (req: Request, res: Response) => {
+  try {
+    const { email, newPassword } = req.body;
+
+    const hashedPassword = await argon2.hash(newPassword);
+
+    const updatedUser = await prisma.users.update({
+      where: { email },
+      data: { password: hashedPassword },
+    });
+
+    res.status(200).json({
+      isSuccess: true,
+       message: 'Password reset successfully'
+       });
+  } catch (error) {
+    res.status(500).json({
+      isSuccess: false,
+       error: 'Failed to reset password'
+    });
+  }
+};
+

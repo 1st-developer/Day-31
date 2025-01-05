@@ -85,3 +85,34 @@ export const getMyArticles = async (req: AuthRequest, res: Response) => {
     });
   }
 };
+
+export const updateArticle = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { title, content } = req.body;
+
+    const updatedArticle = await prisma.article.update({
+      where: { id: Number(id) },
+      data: { title, content },
+    });
+
+    res.status(200).json(updatedArticle);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update article' });
+  }
+};
+
+export const deleteArticle = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    await prisma.article.delete({
+      where: { id: Number(id) },
+    });
+
+    res.status(200).json({ message: 'Article deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete article' });
+  }
+};
+
